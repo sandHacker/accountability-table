@@ -1,0 +1,27 @@
+@page "/history"
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<h3>سجل الأيام</h3>
+@if (history == null || history.Count == 0)
+{
+    <p>لا يوجد سجل بعد.</p>
+}
+else
+{
+    <ul>
+        @foreach (var entry in history)
+        {
+            <li>@entry.Date - الفجر: @(entry.PrayedFajr ? "✔️" : "❌") - القرآن: @(entry.ReadQuran ? "✔️" : "❌")</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Checklist.ChecklistHistoryEntry> history = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        history = await LocalStorage.GetItemAsync<List<Checklist.ChecklistHistoryEntry>>("history")
+            ?? new List<Checklist.ChecklistHistoryEntry>();
+    }
+}

@@ -1,0 +1,33 @@
+@page "/complete-profile"
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Navigation
+
+<h3>إكمال الملف الشخصي</h3>
+<EditForm Model="@profile" OnValidSubmit="SaveProfile">
+    <InputNumber @bind-Value="profile.QiyamRak3at" class="form-control mb-2" placeholder="عدد ركعات قيام الليل" />
+    <InputNumber @bind-Value="profile.QuranWirdArba3" class="form-control mb-2" placeholder="عدد أرباع ورد القرآن" />
+    <button type="submit" class="btn btn-success">حفظ</button>
+</EditForm>
+
+@code {
+    private Profile profile = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var loaded = await LocalStorage.GetItemAsync<Profile>("profile");
+        if (loaded != null)
+            profile = loaded;
+    }
+
+    private async Task SaveProfile()
+    {
+        await LocalStorage.SetItemAsync("profile", profile);
+        Navigation.NavigateTo("/checklist", true);
+    }
+
+    public class Profile
+    {
+        public int QiyamRak3at { get; set; }
+        public int QuranWirdArba3 { get; set; }
+    }
+}

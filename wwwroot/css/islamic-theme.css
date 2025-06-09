@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri&family=Cairo:wght@700&family=Lateef&display=swap');
+
+body {
+    font-family: 'Amiri', 'Cairo', 'Lateef', serif;
+    background: #e6f2ef url('/images/geometric-bg.svg') top repeat;
+    color: #184e36;
+    direction: rtl;
+}
+
+h2, h3, h4 {
+    font-family: 'Cairo', 'Amiri', serif;
+}
+
+.checklist-container {
+    background: rgba(255,255,255,0.97);
+    border-radius: 16px;
+    border: 2px solid #b6ceba;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.checklist-item label {
+    font-size: 1.15rem;
+    margin-right: 12px;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.5);
+    accent-color: #50bfa3;
+}
+
+.btn-success, .btn-primary {
+    font-size: 1.1rem;
+    padding: 0.7rem 2.2rem;
+    border-radius: 8px;
+}
+
+.result-summary {
+    border: 2px solid #b6ceba;
+    background: #f2faf7;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.progress {
+    background-color: #c2e2d6;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.progress-bar {
+    background-color: #50bfa3 !important;
+    font-size: 1rem;
+}

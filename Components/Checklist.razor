@@ -1,0 +1,39 @@
+@using YourApp.Services
+@inject ChecklistService ChecklistService
+@inject HijriDateService HijriDateService
+
+<h3>جدول المحاسبة اليومي</h3>
+<div class="checklist-container">
+    @foreach (var item in ChecklistItems)
+    {
+        <div class="checklist-item">
+            <label>@item.Label</label>
+            <input type="checkbox" @bind="item.Completed" />
+        </div>
+    }
+</div>
+<button @onclick="EndDay">نهاية اليوم</button>
+<ResultSummary Visible="@ShowResult" Result="@TodayResult" OnNewDay="StartNewDay" />
+
+@code {
+    private List<ChecklistItemModel> ChecklistItems;
+    private bool ShowResult = false;
+    private DailyResult TodayResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var hijriDate = await HijriDateService.GetTodayHijriDate();
+        ChecklistItems = await ChecklistService.LoadChecklistForToday(hijriDate);
+    }
+
+    private async Task EndDay()
+    {
+        TodayResult = await ChecklistService.CompleteDay(ChecklistItems);
+        ShowResult = true;
+    }
+    private void StartNewDay()
+    {
+        ShowResult = false;
+        StateHasChanged();
+    }
+}

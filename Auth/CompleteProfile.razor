@@ -1,0 +1,35 @@
+@page "/complete-profile"
+@using جدول_محاسبة.Data.Models
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthProvider
+
+<h3>إكمال الملف الشخصي</h3>
+<EditForm Model="_profile" OnValidSubmit="SaveProfile">
+    <InputNumber @bind-Value="_profile.QiyamRak3at" class="form-control mb-2" placeholder="عدد ركعات قيام الليل" />
+    <InputNumber @bind-Value="_profile.QuranWirdArba3" class="form-control mb-2" placeholder="عدد أرباع ورد القرآن" />
+    <button type="submit" class="btn btn-success">حفظ</button>
+</EditForm>
+
+@code {
+    private ApplicationUser _profile = new ApplicationUser();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        var user = await UserManager.GetUserAsync(state.User);
+        if (user != null)
+        {
+            _profile = user;
+        }
+    }
+
+    private async Task SaveProfile()
+    {
+        var user = await UserManager.FindByIdAsync(_profile.Id);
+        user.QiyamRak3at = _profile.QiyamRak3at;
+        user.QuranWirdArba3 = _profile.QuranWirdArba3;
+        await UserManager.UpdateAsync(user);
+        Navigation.NavigateTo("/checklist", true);
+    }
+}

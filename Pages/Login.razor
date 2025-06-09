@@ -1,0 +1,28 @@
+@page "/login"
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Navigation
+
+<h3>تسجيل الدخول</h3>
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+<input @bind="username" placeholder="اسم المستخدم" class="form-control mb-2" />
+<button @onclick="Login" class="btn btn-primary">دخول</button>
+
+@code {
+    private string username;
+    private string error;
+
+    private async Task Login()
+    {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            error = "يجب إدخال اسم المستخدم";
+            return;
+        }
+
+        await LocalStorage.SetItemAsync("username", username);
+        Navigation.NavigateTo("/checklist", true);
+    }
+}

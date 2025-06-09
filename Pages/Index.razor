@@ -1,0 +1,13 @@
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var username = await LocalStorage.GetItemAsync<string>("username");
+        if (string.IsNullOrEmpty(username))
+            Navigation.NavigateTo("/login", true);
+        else
+            Navigation.NavigateTo("/checklist", true);
+    }
+}

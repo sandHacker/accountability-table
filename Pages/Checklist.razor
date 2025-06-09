@@ -1,0 +1,60 @@
+@page "/checklist"
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Navigation
+
+<h3>جدول اليومي</h3>
+<EditForm Model="@checklist" OnValidSubmit="SaveChecklist">
+    <InputCheckbox @bind-Value="checklist.PrayedFajr" /> صليت الفجر<br />
+    <InputCheckbox @bind-Value="checklist.ReadQuran" /> قرأت القرآن<br />
+    <button type="submit" class="btn btn-success">حفظ</button>
+</EditForm>
+
+@code {
+    private Checklist checklist = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var loaded = await LocalStorage.GetItemAsync<Checklist>("today-checklist");
+        if (loaded != null)
+            checklist = loaded;
+    }
+
+    private async Task SaveChecklist()
+    {
+        await LocalStorage.SetItemAsync("today-checklist", checklist);
+
+        // Save to history as well
+        var history = await LocalStorage.GetItemAsync<List<ChecklistHistoryEntry>>("history")
+            ?? new List<ChecklistHistoryEntry>();
+
+        var today = DateTime.Now.ToString("yyyy-MM-dd");
+        var existing = history.FirstOrDefault(h => h.Date == today);
+        if (existing != null)
+        {
+            existing.PrayedFajr = checklist.PrayedFajr;
+            existing.ReadQuran = checklist.ReadQuran;
+        }
+        else
+        {
+            history.Add(new ChecklistHistoryEntry
+            {
+                Date = today,
+                PrayedFajr = checklist.PrayedFajr,
+                ReadQuran = checklist.ReadQuran
+            });
+        }
+        await LocalStorage.SetItemAsync("history", history);
+    }
+
+    public class Checklist
+    {
+        public bool PrayedFajr { get; set; }
+        public bool ReadQuran { get; set; }
+    }
+    public class ChecklistHistoryEntry
+    {
+        public string Date { get; set; }
+        public bool PrayedFajr { get; set; }
+        public bool ReadQuran { get; set; }
+    }
+}

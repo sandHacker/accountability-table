@@ -1,0 +1,11 @@
+body {
+    font-family: 'Cairo', Arial, sans-serif;
+    direction: rtl;
+    background: #f8f9fa;
+}
+.content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 16px #e0e0e0;
+}

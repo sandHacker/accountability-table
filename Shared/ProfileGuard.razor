@@ -1,0 +1,20 @@
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Navigation
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var username = await LocalStorage.GetItemAsync<string>("username");
+        if (string.IsNullOrEmpty(username))
+        {
+            Navigation.NavigateTo("/login", true);
+            return;
+        }
+
+        var profile = await LocalStorage.GetItemAsync<object>("profile");
+        if (profile == null)
+        {
+            Navigation.NavigateTo("/complete-profile", true);
+        }
+    }
+}

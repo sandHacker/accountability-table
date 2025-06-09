@@ -1,0 +1,40 @@
+@page "/login"
+@using جدول_محاسبة.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+
+<h3>تسجيل الدخول</h3>
+<EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
+    <InputText @bind-Value="_loginModel.UserName" placeholder="اسم المستخدم" class="form-control mb-2" />
+    <InputText @bind-Value="_loginModel.Password" type="password" placeholder="كلمة المرور" class="form-control mb-2" />
+    <button type="submit" class="btn btn-primary">دخول</button>
+</EditForm>
+@if (!string.IsNullOrEmpty(_error))
+{
+    <div class="alert alert-danger mt-2">@_error</div>
+}
+
+@code {
+    private LoginModel _loginModel = new LoginModel();
+    private string _error;
+
+    private async Task HandleLogin()
+    {
+        var result = await SignInManager.PasswordSignInAsync(_loginModel.UserName, _loginModel.Password, false, false);
+        if (result.Succeeded)
+        {
+            Navigation.NavigateTo("/checklist", true);
+        }
+        else
+        {
+            _error = "بيانات الدخول غير صحيحة";
+        }
+    }
+
+    public class LoginModel
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
+}

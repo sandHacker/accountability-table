@@ -1,0 +1,45 @@
+@page "/register"
+@using جدول_محاسبة.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+
+<h3>تسجيل حساب جديد</h3>
+<EditForm Model="_registerModel" OnValidSubmit="HandleRegister">
+    <InputText @bind-Value="_registerModel.UserName" placeholder="اسم المستخدم" class="form-control mb-2" />
+    <InputText @bind-Value="_registerModel.Email" placeholder="البريد الإلكتروني" class="form-control mb-2" />
+    <InputText @bind-Value="_registerModel.Password" type="password" placeholder="كلمة المرور" class="form-control mb-2" />
+    <InputText @bind-Value="_registerModel.ConfirmPassword" type="password" placeholder="تأكيد كلمة المرور" class="form-control mb-2" />
+    <button type="submit" class="btn btn-primary">التالي</button>
+</EditForm>
+
+@code {
+    private RegisterModel _registerModel = new RegisterModel();
+
+    private async Task HandleRegister()
+    {
+        if (_registerModel.Password != _registerModel.ConfirmPassword)
+            return;
+        var user = new ApplicationUser
+        {
+            UserName = _registerModel.UserName,
+            Email = _registerModel.Email
+        };
+        var result = await UserManager.CreateAsync(user, _registerModel.Password);
+        if (result.Succeeded)
+        {
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            Navigation.NavigateTo("/complete-profile");
+        }
+        // Handle errors...
+    }
+
+    public class RegisterModel
+    {
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+}
